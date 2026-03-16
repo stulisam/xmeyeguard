@@ -3,8 +3,6 @@ name: Build Android APK
 on:
   push:
     branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
   workflow_dispatch:
 
 env:
@@ -49,31 +47,14 @@ jobs:
           ${{ runner.os }}-buildozer-
           
     - name: Build APK
+      timeout-minutes: 60
       run: |
-        buildozer android debug 2>&1 | tee build.log
-        
-    - name: Upload build logs
-      if: failure()
-      uses: actions/upload-artifact@v4
-      with:
-        name: build-logs
-        path: build.log
+        buildozer android debug
+        ls -la bin/
         
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: eyeguard-apk
         path: bin/*.apk
-        retention-days: 30
-        
-    - name: Create Release
-      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-      uses: softprops/action-gh-release@v1
-      with:
-        files: bin/*.apk
-        tag_name: v${{ github.run_number }}
-        name: Release v${{ github.run_number }}
-        draft: false
-        prerelease: false
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if-no-files-found: warn
