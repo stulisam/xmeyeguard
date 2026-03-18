@@ -48,9 +48,11 @@ jobs:
         unzip -q commandlinetools-linux-9477386_latest.zip
         mkdir -p cmdline-tools/latest
         mv cmdline-tools/* cmdline-tools/latest/ 2>/dev/null || true
-        export PATH=$PATH:$HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin
+        export PATH=$PATH:$HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin:$HOME/.buildozer/android/platform/android-sdk/platform-tools
         yes | sdkmanager --licenses || true
-        sdkmanager "platform-tools" "build-tools;33.0.0" "platforms;android-33" || true
+        sdkmanager "platform-tools" "build-tools;33.0.0" "platforms;android-33" "sources;android-33"
+        echo "ANDROIDAPI=33" >> $GITHUB_ENV
+        echo "ANDROIDNDKVER=25b" >> $GITHUB_ENV
         
     - name: Cache Buildozer dependencies
       uses: actions/cache@v4
