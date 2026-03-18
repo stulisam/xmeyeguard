@@ -31,10 +31,19 @@ jobs:
           cmake libffi-dev libssl-dev \
           liblzma-dev python3-venv
         
-    - name: Install Python dependencies
+    - name: Install Cython
       run: |
-        pip install --upgrade pip
-        pip install buildozer cython virtualenv
+        pip install --upgrade pip setuptools wheel
+        pip install Cython==0.29.36
+        
+    - name: Install Buildozer
+      run: |
+        pip install buildozer
+        
+    - name: Accept Android SDK licenses
+      run: |
+        mkdir -p ~/.buildozer/android/platform/android-sdk
+        yes | buildozer android sdk install || true
         
     - name: Cache Buildozer dependencies
       uses: actions/cache@v4
