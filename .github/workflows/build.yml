@@ -40,10 +40,17 @@ jobs:
       run: |
         pip install buildozer
         
-    - name: Accept Android SDK licenses
+    - name: Setup Android SDK
       run: |
         mkdir -p ~/.buildozer/android/platform/android-sdk
-        yes | buildozer android sdk install || true
+        cd ~/.buildozer/android/platform/android-sdk
+        wget -q https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
+        unzip -q commandlinetools-linux-9477386_latest.zip
+        mkdir -p cmdline-tools/latest
+        mv cmdline-tools/* cmdline-tools/latest/ 2>/dev/null || true
+        export PATH=$PATH:$HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin
+        yes | sdkmanager --licenses || true
+        sdkmanager "platform-tools" "build-tools;33.0.0" "platforms;android-33" || true
         
     - name: Cache Buildozer dependencies
       uses: actions/cache@v4
