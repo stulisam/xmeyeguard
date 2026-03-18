@@ -59,4 +59,10 @@ warn_on_root = 0
 
 # CI 环境优化
 android.accept_sdk_license = True
-android.skip_update = False
+android.skip_update = True
+
+# 指定 Build Tools 版本
+android.build_tools = 33.0.0
+
+# 避免 libffi 编译问题
+android.requirements_blacklist = libffi
